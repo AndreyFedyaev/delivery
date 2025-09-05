@@ -20,6 +20,13 @@ namespace DeliveryApp.Core.Domain.Model.SharedKernel
     {
         #region PROPERTIES
         /// <summary>
+        ///     Константы 
+        /// </summary>
+        private const int minPosition = 1;
+        private const int maxPosition = 10;
+
+
+        /// <summary>
         ///     Координата по горизонтали
         /// </summary>
         public int X { get; private set; }
@@ -55,8 +62,8 @@ namespace DeliveryApp.Core.Domain.Model.SharedKernel
         /// <returns>Результат</returns>
         public static Result<Location, Error> Create(int x, int y)
         {
-            if (x < 1 || x > 10) return GeneralErrors.ValueIsRequired(nameof(x));
-            if (y < 1 || y > 10) return GeneralErrors.ValueIsRequired(nameof(x));
+            if (x < minPosition || x > maxPosition) return GeneralErrors.ValueIsRequired(nameof(x));
+            if (y < minPosition || y > maxPosition) return GeneralErrors.ValueIsRequired(nameof(x));
 
             return new Location(x,y);
         }
@@ -67,8 +74,8 @@ namespace DeliveryApp.Core.Domain.Model.SharedKernel
         /// <returns>Новые рандомные координаты</returns>
         public static Location CreateRandom()
         {
-            var randomX = new Random().Next(1, 10);
-            var randomY = new Random().Next(1, 10);
+            var randomX = new Random().Next(minPosition, maxPosition);
+            var randomY = new Random().Next(minPosition, maxPosition);
 
             return new Location(randomX, randomY);
         }
