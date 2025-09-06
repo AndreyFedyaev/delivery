@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DeliveryApp.UnitTests.Domain.Model.SharedKernel
 {
-    public class LocationShould
+    public class LocationTests
     {
         [Fact]
         public void BeCorrectWhenParamsAreCorrectOnCreated()
