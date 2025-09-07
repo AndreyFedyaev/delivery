@@ -18,7 +18,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
     /// <summary>
     ///     Курьер
     /// </summary>
-    class Courier : Aggregate<Guid>
+    public class Courier : Aggregate<Guid>
     {
         /// <summary>
         ///     Константы 
@@ -38,6 +38,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <param name="buyerId">Идентификатор покупателя</param>
         private Courier(string name, int speed, Location location, StoragePlace storagePlace) : this()
         {
+            Id = Guid.NewGuid();
             Name = name;
             Speed = speed;
             Location = location;
@@ -62,7 +63,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <summary>
         ///     Места хранения курьера
         /// </summary>
-        public List<StoragePlace> StoragePlaces { get; private set; }
+        public List<StoragePlace> StoragePlaces { get; private set; } = new List<StoragePlace>();
 
         /// <summary>
         ///     Factory Method

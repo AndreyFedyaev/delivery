@@ -5,7 +5,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
     /// <summary>
     ///     Статус заказа
     /// </summary>
-    class OrderStatus : ValueObject
+    public class OrderStatus : ValueObject
     {
         public static OrderStatus Created => new(nameof(Created).ToLowerInvariant());
         public static OrderStatus Assigned => new(nameof(Assigned).ToLowerInvariant());

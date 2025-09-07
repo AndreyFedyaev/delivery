@@ -8,7 +8,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
     /// <summary>
     ///     Заказ
     /// </summary>
-    class Order : Aggregate<Guid>
+    public class Order : Aggregate<Guid>
     {
         /// <summary>
         ///     Ctr
