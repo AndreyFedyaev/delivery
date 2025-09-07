@@ -62,7 +62,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <summary>
         ///     Места хранения курьера
         /// </summary>
-        public  List<StoragePlace> StoragePlaces { get; private set; }
+        public List<StoragePlace> StoragePlaces { get; private set; }
 
         /// <summary>
         ///     Factory Method
@@ -103,10 +103,12 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <summary>
         ///     Проверка на возможность взять заказ
         /// </summary>
-        /// <param name="volume">Объём</param>
+        /// <param name="order">Заказ</param>
         /// <returns>статус</returns>
-        public Result<bool, Error> CanTakeorder(Order order)
+        public Result<bool, Error> CanTakeOrder(Order order)
         {
+            if (order == null) return GeneralErrors.ValueIsRequired(nameof(order));
+
             foreach (var storagePlace in StoragePlaces)
             {
                 if (storagePlace.CanStore(order.Volume).IsSuccess)
@@ -116,6 +118,88 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
             }
             return false;
         }
-    }
 
+        /// <summary>
+        ///     Взять заказ
+        /// </summary>
+        /// <param name="order">Заказ</param>
+        /// <returns>статус</returns>
+        public UnitResult<Error> TakeOrder(Order order)
+        {
+            if (order == null) return GeneralErrors.ValueIsRequired(nameof(order));
+
+            foreach (var storagePlace in StoragePlaces)
+            {
+                if (storagePlace.CanStore(order.Volume).IsSuccess)
+                {
+                    var storeResult = storagePlace.Store(order.Id, order.Volume);
+                    if (storeResult.IsFailure) return storeResult.Error;
+                }
+            }
+
+            return UnitResult.Success<Error>();
+        }
+
+        /// <summary>
+        ///     Завершить заказ
+        /// </summary>
+        /// <param name="order">Заказ</param>
+        /// <returns>статус</returns>
+        public UnitResult<Error> ComplateOrder(Order order)
+        {
+            if (order == null) return GeneralErrors.ValueIsRequired(nameof(order));
+
+            foreach (var storagePlace in StoragePlaces)
+            {
+                if (storagePlace.OrderId == order.Id)
+                {
+                    var clearResult = storagePlace.Clear(order.Id);
+                    if (clearResult.IsFailure) return clearResult.Error;
+                }
+            }
+
+            return UnitResult.Success<Error>();
+        }
+
+        /// <summary>
+        ///     Рассчет количества шагов на путь до локации заказа
+        /// </summary>
+        /// <param name="location">Локация для рассчета</param>
+        /// <returns>Количество шагов</returns>
+        public Result<double, Error> CalculateTimeToLocation(Location location)
+        {
+            if (location == null) return GeneralErrors.ValueIsRequired(nameof(location));
+
+            var distanceToResult = Location.DistanceTo(location);
+            if (distanceToResult.IsFailure) return distanceToResult.Error;
+
+            var result = (double)distanceToResult.Value / Speed;
+            return result;
+        }
+
+        /// <summary>
+        ///     Изменить местоположение
+        /// </summary>
+        /// <param name="target">Целевое местоположение</param>
+        /// <returns>Местоположение после сдвига</returns>
+        public UnitResult<Error> Move(Location target)
+        {
+            if (target == null) return GeneralErrors.ValueIsRequired(nameof(target));
+
+            var difX = target.X - Location.X;
+            var difY = target.Y - Location.Y;
+            var cruisingRange = Speed;
+
+            var moveX = Math.Clamp(difX, -cruisingRange, cruisingRange);
+            cruisingRange -= Math.Abs(moveX);
+
+            var moveY = Math.Clamp(difY, -cruisingRange, cruisingRange);
+
+            var locationCreateResult = Location.Create(Location.X + moveX, Location.Y + moveY);
+            if (locationCreateResult.IsFailure) return locationCreateResult.Error;
+            Location = locationCreateResult.Value;
+
+            return UnitResult.Success<Error>();
+        }
+    }
 }

@@ -2,15 +2,12 @@
 using DeliveryApp.Core.Domain.Model.CourierAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Primitives;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DeliveryApp.Core.Domain.Model.OrderAggregate
 {
+    /// <summary>
+    ///     Заказ
+    /// </summary>
     class Order : Aggregate<Guid>
     {
         /// <summary>
@@ -23,7 +20,9 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         /// <summary>
         ///     Ctr
         /// </summary>
-        /// <param name="buyerId">Идентификатор покупателя</param>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <param name="location">Местоположение куда нужно доставить заказ</param>
+        /// <param name="volume">Объём заказа</param>
         private Order(Guid orderId, Location location, int volume) : this()
         {
             Id = orderId;
@@ -62,6 +61,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         /// <returns>Результат</returns>
         public static Result<Order, Error> Create(Guid orderId, Location location, int volume)
         {
+            if (orderId == Guid.Empty) return GeneralErrors.ValueIsRequired(nameof(orderId));
             if (location == null) return GeneralErrors.ValueIsRequired(nameof(location));
             if (volume <= 0) return GeneralErrors.ValueIsInvalid(nameof(volume));
 
@@ -69,14 +69,14 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         }
 
         /// <summary>
-        ///     Назначение на курьера
+        ///     Назначение заказа на курьера
         /// </summary>
         /// <param name="courier">Курьер</param>
         /// <returns>результат</returns>
         public UnitResult<Error> Assign(Courier courier)
         {
             if (courier == null) return GeneralErrors.ValueIsRequired(nameof(courier));
-
+            if (Status == OrderStatus.Created) return new Error($"{nameof(courier).ToLowerInvariant()}", "Заказ уже назначен на курьера!");
             CourierId = courier.Id;
             Status = OrderStatus.Assigned;
 
@@ -87,14 +87,17 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         ///     Завершение заказа
         /// </summary>
         /// <returns>результат</returns>
-        public UnitResult<Error> Assign()
+        public UnitResult<Error> Complete()
         {
-            if (Status == OrderStatus.Assigned)
-            {
-                Status = OrderStatus.Completed;
-                CourierId = null;
-            }
+            if (Status != OrderStatus.Assigned) return new Error($"{nameof(Order).ToLowerInvariant()}", "Нельзя завершить заказ, который небыл назначен на курьера!");
+            if (CourierId == null) return new Error($"{nameof(Order).ToLowerInvariant()}", "Нельзя заавершить заказ, который небыл назначен на курьера!");
+
+            Status = OrderStatus.Completed;
+            CourierId = null;
+
             return UnitResult.Success<Error>();
         }
+
+
     }
 }
