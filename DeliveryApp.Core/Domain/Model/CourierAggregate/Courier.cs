@@ -135,6 +135,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
                 {
                     var storeResult = storagePlace.Store(order.Id, order.Volume);
                     if (storeResult.IsFailure) return storeResult.Error;
+                    break;
                 }
             }
 
@@ -156,6 +157,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
                 {
                     var clearResult = storagePlace.Clear(order.Id);
                     if (clearResult.IsFailure) return clearResult.Error;
+                    break;
                 }
             }
 
