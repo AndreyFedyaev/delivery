@@ -1,4 +1,5 @@
 using DeliveryApp.Api;
+using DeliveryApp.Core.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,10 @@ builder.Services.ConfigureOptions<SettingsSetup>();
 var connectionString = builder.Configuration["CONNECTION_STRING"];
 
 var app = builder.Build();
+
+
+builder.Services.AddSingleton<IDispatchService, DispatchService>();
+
 
 // -----------------------------------
 // Configure the HTTP request pipeline
