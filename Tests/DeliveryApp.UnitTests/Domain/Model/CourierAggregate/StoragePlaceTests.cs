@@ -15,6 +15,7 @@ namespace DeliveryApp.UnitTests.Domain.Model.CourierAggregate
         [Fact]
         public void BeCorrectWhenParamsAreCorrectOnCreated()
         {
+            
             //Act
             var storagePlace = StoragePlace.Create("BackPack", 20);
 

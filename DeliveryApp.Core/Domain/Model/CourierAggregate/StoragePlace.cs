@@ -22,6 +22,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <param name="quantity">Количество</param>
         private StoragePlace(string name, int volume) : this()
         {
+            Id = Guid.NewGuid();
             Name = name;
             TotalVolume = volume;
         }
