@@ -89,12 +89,12 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <param name="mame">название места хранения</param>
         /// <param name="volume">Объём</param>
         /// <returns>результат</returns>
-        public UnitResult<Error> AddStoragePlace(string mame, int volume)
+        public UnitResult<Error> AddStoragePlace(string name, int volume)
         {
-            if (String.IsNullOrEmpty(mame)) return GeneralErrors.ValueIsRequired(nameof(mame));
+            if (String.IsNullOrEmpty(name)) return GeneralErrors.ValueIsRequired(nameof(name));
             if (volume <= 0) return GeneralErrors.ValueIsInvalid(nameof(volume));
 
-            var storagePlace = StoragePlace.Create(mame, volume);
+            var storagePlace = StoragePlace.Create(name, volume);
             if (storagePlace.IsFailure) return storagePlace.Error;
             StoragePlaces.Add(storagePlace.Value);
 
