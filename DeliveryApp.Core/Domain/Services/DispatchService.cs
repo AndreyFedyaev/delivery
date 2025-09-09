@@ -24,7 +24,7 @@ namespace DeliveryApp.Core.Domain.Services
             for (int i = 0; i < couriers.Count; i++)
             {
                 var canTake = couriers[i].CanTakeOrder(order);
-                if (canTake.IsFailure) break;
+                if (!canTake.Value) continue;
 
                 var step = couriers[i].CalculateTimeToLocation(order.Location);
                 courierStep.Add(step.Value, i);
