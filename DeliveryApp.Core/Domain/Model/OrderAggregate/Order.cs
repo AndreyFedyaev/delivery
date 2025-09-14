@@ -76,7 +76,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         public UnitResult<Error> Assign(Courier courier)
         {
             if (courier == null) return GeneralErrors.ValueIsRequired(nameof(courier));
-            if (Status == OrderStatus.Created) return new Error($"{nameof(courier).ToLowerInvariant()}", "Заказ уже назначен на курьера!");
+            if (Status != OrderStatus.Created) return new Error($"{nameof(courier).ToLowerInvariant()}", "Заказ уже назначен на курьера!");
             CourierId = courier.Id;
             Status = OrderStatus.Assigned;
 

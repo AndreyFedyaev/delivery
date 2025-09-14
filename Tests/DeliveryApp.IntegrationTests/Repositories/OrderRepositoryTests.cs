@@ -84,107 +84,113 @@ public class OrderRepositoryShould : IAsyncLifetime
         order.Should().BeEquivalentTo(orderFromDb);
     }
 
-    //[Fact]
-    //public async Task CanUpdateOrder()
-    //{
-    //    //Arrange
-    //    var courier = Courier.Create("Pedestrian", 1, Location.Create(1, 1).Value).Value;
+    [Fact]
+    public async Task CanUpdateOrder()
+    {
+        //Arrange
+        var courier = Courier.Create("Pedestrian", 1, Location.Create(1, 1).Value).Value;
 
-    //    var orderId = Guid.NewGuid();
-    //    var order = Order.Create(orderId, Location.MinLocation, 5).Value;
+        var orderId = Guid.NewGuid();
+        var location = Location.Create(1, 1).Value;
+        var order = Order.Create(orderId, location, 5).Value;
 
-    //    var orderRepository = new OrderRepository(_context);
-    //    await orderRepository.AddAsync(order);
+        var orderRepository = new OrderRepository(_context);
+        await orderRepository.AddAsync(order);
 
-    //    var unitOfWork = new UnitOfWork(_context);
-    //    await unitOfWork.SaveChangesAsync();
+        var unitOfWork = new UnitOfWork(_context);
+        await unitOfWork.SaveChangesAsync();
 
-    //    //Act
-    //    var orderAssignToCourierResult = order.Assign(courier);
-    //    orderAssignToCourierResult.IsSuccess.Should().BeTrue();
-    //    orderRepository.Update(order);
-    //    await unitOfWork.SaveChangesAsync();
+        //Act
+        var orderAssignToCourierResult = order.Assign(courier);
+        orderAssignToCourierResult.IsSuccess.Should().BeTrue();
+        orderRepository.Update(order);
+        await unitOfWork.SaveChangesAsync();
 
-    //    //Assert
-    //    var getOrderResult = await orderRepository.GetAsync(order.Id);
-    //    getOrderResult.HasValue.Should().BeTrue();
-    //    var orderFromDb = getOrderResult.Value;
-    //    order.Should().BeEquivalentTo(orderFromDb);
-    //}
+        //Assert
+        var getOrderResult = await orderRepository.GetAsync(order.Id);
+        getOrderResult.HasValue.Should().BeTrue();
+        var orderFromDb = getOrderResult.Value;
+        order.Should().BeEquivalentTo(orderFromDb);
+    }
 
-    //[Fact]
-    //public async Task CanGetById()
-    //{
-    //    //Arrange
-    //    var orderId = Guid.NewGuid();
-    //    var order = Order.Create(orderId, Location.MinLocation, 5).Value;
+    [Fact]
+    public async Task CanGetById()
+    {
+        //Arrange
+        var orderId = Guid.NewGuid();
+        var location = Location.Create(1, 1).Value;
+        var order = Order.Create(orderId, location, 5).Value;
 
-    //    //Act
-    //    var orderRepository = new OrderRepository(_context);
-    //    await orderRepository.AddAsync(order);
+        //Act
+        var orderRepository = new OrderRepository(_context);
+        await orderRepository.AddAsync(order);
 
-    //    var unitOfWork = new UnitOfWork(_context);
-    //    await unitOfWork.SaveChangesAsync();
+        var unitOfWork = new UnitOfWork(_context);
+        await unitOfWork.SaveChangesAsync();
 
-    //    //Assert
-    //    var getOrderResult = await orderRepository.GetAsync(order.Id);
-    //    getOrderResult.HasValue.Should().BeTrue();
-    //    var orderFromDb = getOrderResult.Value;
-    //    order.Should().BeEquivalentTo(orderFromDb);
-    //}
+        //Assert
+        var getOrderResult = await orderRepository.GetAsync(order.Id);
+        getOrderResult.HasValue.Should().BeTrue();
+        var orderFromDb = getOrderResult.Value;
+        order.Should().BeEquivalentTo(orderFromDb);
+    }
 
-    //[Fact]
-    //public async Task CanGetFirstInCreatedStatus()
-    //{
-    //    //Arrange
-    //    var courier = Courier.Create("Pedestrian", 1, Location.Create(1, 1).Value).Value;
+    [Fact]
+    public async Task CanGetFirstInCreatedStatus()
+    {
+        //Arrange
+        var courier = Courier.Create("Pedestrian", 1, Location.Create(1, 1).Value).Value;
 
-    //    var order1Id = Guid.NewGuid();
-    //    var order1 = Order.Create(order1Id, Location.MinLocation, 5).Value;
-    //    var orderAssignToCourierResult = order1.Assign(courier);
-    //    orderAssignToCourierResult.IsSuccess.Should().BeTrue();
+        var order1Id = Guid.NewGuid();
+        var location = Location.Create(1, 1).Value;
+        var order1 = Order.Create(order1Id, location, 5).Value;
+        var orderAssignToCourierResult = order1.Assign(courier);
+        orderAssignToCourierResult.IsSuccess.Should().BeTrue();
 
-    //    var order2Id = Guid.NewGuid();
-    //    var order2 = Order.Create(order2Id, Location.MinLocation, 5).Value;
+        var order2Id = Guid.NewGuid();
+        var location2 = Location.Create(1, 1).Value;
+        var order2 = Order.Create(order2Id, location2, 5).Value;
 
-    //    var orderRepository = new OrderRepository(_context);
-    //    await orderRepository.AddAsync(order1);
-    //    await orderRepository.AddAsync(order2);
+        var orderRepository = new OrderRepository(_context);
+        await orderRepository.AddAsync(order1);
+        await orderRepository.AddAsync(order2);
 
-    //    var unitOfWork = new UnitOfWork(_context);
-    //    await unitOfWork.SaveChangesAsync();
+        var unitOfWork = new UnitOfWork(_context);
+        await unitOfWork.SaveChangesAsync();
 
-    //    //Act
-    //    var getFirstOrderInCreatedStatusFromDbResult = await orderRepository.GetFirstInCreatedStatusAsync();
+        //Act
+        var getFirstOrderInCreatedStatusFromDbResult = await orderRepository.GetFirstInCreatedStatusAsync();
 
-    //    //Assert
-    //    getFirstOrderInCreatedStatusFromDbResult.HasValue.Should().BeTrue();
-    //    var orderFromDb = getFirstOrderInCreatedStatusFromDbResult.Value;
-    //    order2.Should().BeEquivalentTo(orderFromDb);
-    //}
+        //Assert
+        getFirstOrderInCreatedStatusFromDbResult.HasValue.Should().BeTrue();
+        var orderFromDb = getFirstOrderInCreatedStatusFromDbResult.Value;
+        order2.Should().BeEquivalentTo(orderFromDb);
+    }
 
-    //[Fact]
-    //public async Task WhenSaveOrdersWithSameLocationThenShouldCorrectSavingAtDatabase()
-    //{
-    //    // Arrange
-    //    var firstOrderId = Guid.NewGuid();
-    //    var secondOrderId = Guid.NewGuid();
+    [Fact]
+    public async Task WhenSaveOrdersWithSameLocationThenShouldCorrectSavingAtDatabase()
+    {
+        // Arrange
+        var firstOrderId = Guid.NewGuid();
+        var secondOrderId = Guid.NewGuid();
 
-    //    var firstOrder = Order.Create(firstOrderId, Location.MinLocation, 5).Value;
-    //    var secondOrder = Order.Create(secondOrderId, Location.MinLocation, 5).Value;
-    //    var orderRepository = new OrderRepository(_context);
-    //    var unitOfWork = new UnitOfWork(_context);
+        var location1 = Location.Create(1, 1).Value;
+        var location2 = Location.Create(1, 1).Value;
+        var firstOrder = Order.Create(firstOrderId, location1, 5).Value;
+        var secondOrder = Order.Create(secondOrderId, location2, 5).Value;
+        var orderRepository = new OrderRepository(_context);
+        var unitOfWork = new UnitOfWork(_context);
 
-    //    await orderRepository.AddAsync(firstOrder);
-    //    await orderRepository.AddAsync(secondOrder);
-    //    await unitOfWork.SaveChangesAsync();
+        await orderRepository.AddAsync(firstOrder);
+        await orderRepository.AddAsync(secondOrder);
+        await unitOfWork.SaveChangesAsync();
 
-    //    // Act
-    //    var first = await orderRepository.GetAsync(firstOrderId);
-    //    var second = await orderRepository.GetAsync(secondOrderId);
+        // Act
+        var first = await orderRepository.GetAsync(firstOrderId);
+        var second = await orderRepository.GetAsync(secondOrderId);
 
-    //    // Assert
-    //    first.Value.Location.Should().Be(Location.MinLocation);
-    //    second.Value.Location.Should().Be(Location.MinLocation);
-    //}
+        // Assert
+        first.Value.Location.Should().Be(location1);
+        second.Value.Location.Should().Be(location2);
+    }
 }
