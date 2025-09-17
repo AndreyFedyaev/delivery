@@ -1,7 +1,11 @@
 using CSharpFunctionalExtensions;
 using DeliveryApp.Api;
+using DeliveryApp.Core.Application.Commands.AssignToCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCourier;
+using DeliveryApp.Core.Application.Queries.GetAllCouriers;
+using DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
+using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
@@ -55,6 +59,11 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 // Commands
 builder.Services.AddScoped<IRequestHandler<CreateOrderCommand, UnitResult<Error>>, CreateOrderHandler>();
 builder.Services.AddScoped<IRequestHandler<MoveCourierCommand, UnitResult<Error>>, MoveCourierHandler>();
+builder.Services.AddScoped<IRequestHandler<AssignToCourierCommand, UnitResult<Error>>, AssignToCourierHandler>();
+
+// Queries
+builder.Services.AddScoped<IRequestHandler<GetAllCouriersQuery, GetAllCouriersQueryResponse>, GetAllCouriersHandler>();
+builder.Services.AddScoped<IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResponse>, GetNotCompletedOrdersHandler>();
 
 var app = builder.Build();
 
