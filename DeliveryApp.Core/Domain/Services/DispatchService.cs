@@ -2,12 +2,6 @@
 using DeliveryApp.Core.Domain.Model.CourierAggregate;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using Primitives;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeliveryApp.Core.Domain.Services
 {
@@ -33,6 +27,10 @@ namespace DeliveryApp.Core.Domain.Services
             //определяем индекс курьера в списке с наименьшим количеством шагов
             double minStep = courierStep.Keys.Min();
             int courierStepIndex = courierStep[minStep];
+
+            // Если курьер найден - назначаем заказ на курьера
+            var orderAssignToCourierResult = order.Assign(couriers[courierStepIndex]);
+            if (orderAssignToCourierResult.IsFailure) return orderAssignToCourierResult.Error;
 
             //назначаем курьера на заказ
             var takeOrder = couriers[courierStepIndex].TakeOrder(order);
