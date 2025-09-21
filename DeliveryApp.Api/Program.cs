@@ -70,8 +70,8 @@ builder.Services.AddScoped<IRequestHandler<MoveCourierCommand, UnitResult<Error>
 builder.Services.AddScoped<IRequestHandler<AssignToCourierCommand, UnitResult<Error>>, AssignToCourierHandler>();
 
 // Queries
-builder.Services.AddScoped<IRequestHandler<GetAllCouriersQuery, GetAllCouriersQueryResponse>, GetAllCouriersHandler>();
-builder.Services.AddScoped<IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResponse>, GetNotCompletedOrdersHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAllCouriersQuery, GetAllCouriersQueryResponse>>(_ => new GetAllCouriersHandler(connectionString));
+builder.Services.AddScoped<IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResponse>>(_ => new GetNotCompletedOrdersHandler(connectionString));
 
 // HTTP Handlers
 builder.Services.AddControllers(options => { options.InputFormatters.Insert(0, new InputFormatterStream()); })
@@ -108,26 +108,26 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 // CRON Jobs
-builder.Services.AddQuartz(configure =>
-{
-    var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
-    var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
-    configure
-        .AddJob<AssignOrdersJob>(assignOrdersJobKey)
-        .AddTrigger(
-            trigger => trigger.ForJob(assignOrdersJobKey)
-                .WithSimpleSchedule(
-                    schedule => schedule.WithIntervalInSeconds(1)
-                        .RepeatForever()))
-        .AddJob<MoveCouriersJob>(moveCouriersJobKey)
-        .AddTrigger(
-            trigger => trigger.ForJob(moveCouriersJobKey)
-                .WithSimpleSchedule(
-                    schedule => schedule.WithIntervalInSeconds(2)
-                        .RepeatForever()));
-    configure.UseMicrosoftDependencyInjectionJobFactory();
-});
-builder.Services.AddQuartzHostedService();
+//builder.Services.AddQuartz(configure =>
+//{
+//    var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
+//    var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
+//    configure
+//        .AddJob<AssignOrdersJob>(assignOrdersJobKey)
+//        .AddTrigger(
+//            trigger => trigger.ForJob(assignOrdersJobKey)
+//                .WithSimpleSchedule(
+//                    schedule => schedule.WithIntervalInSeconds(1)
+//                        .RepeatForever()))
+//        .AddJob<MoveCouriersJob>(moveCouriersJobKey)
+//        .AddTrigger(
+//            trigger => trigger.ForJob(moveCouriersJobKey)
+//                .WithSimpleSchedule(
+//                    schedule => schedule.WithIntervalInSeconds(2)
+//                        .RepeatForever()));
+//    configure.UseMicrosoftDependencyInjectionJobFactory();
+//});
+//builder.Services.AddQuartzHostedService();
 
 var app = builder.Build();
 
