@@ -2,16 +2,6 @@
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Primitives;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
 
 namespace DeliveryApp.Core.Domain.Model.CourierAggregate
 {
