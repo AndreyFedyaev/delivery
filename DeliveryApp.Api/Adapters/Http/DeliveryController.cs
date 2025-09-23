@@ -37,7 +37,16 @@ namespace DeliveryApp.Api.Adapters.Http
             var response = await _mediator.Send(getAllCouriers);
 
             if (response == null) return NotFound();
-            return Ok(response.Couriers);
+
+            //маппинг
+            var couriers = response.Couriers.Select(a => new Courier
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Location = new Location { X = a.Location.X, Y = a.Location.Y}
+            });
+
+            return Ok(couriers);
         }
 
         public override async Task<IActionResult> GetOrders()
@@ -46,7 +55,15 @@ namespace DeliveryApp.Api.Adapters.Http
             var response = await _mediator.Send(getOrders);
 
             if (response == null) return NotFound();
-            return Ok(response.Orders);
+
+            //маппинг
+            var orders = response.Orders.Select(a => new Order
+            {
+                Id = a.Id,
+                Location = new Location { X = a.Location.X, Y = a.Location.Y }
+            });
+
+            return Ok(orders);
         }
     }
 }
