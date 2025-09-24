@@ -1,42 +1,42 @@
-﻿using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
-using DeliveryApp.Core.Ports;
+﻿using Dapper;
+using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
+using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using MediatR;
+using Npgsql;
 
 namespace DeliveryApp.Core.Application.Queries.GetNotCompletedOrders
 {
     public class GetNotCompletedOrdersHandler : IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResponse>
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly string _connectionString;
 
-        /// <summary>
-        ///     Ctr
-        /// </summary>
-        public GetNotCompletedOrdersHandler(IOrderRepository orderRepository, ICourierRepository courierRepository)
+        public GetNotCompletedOrdersHandler(string connectionString)
         {
-            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _connectionString = !string.IsNullOrWhiteSpace(connectionString)
+                ? connectionString
+                : throw new ArgumentNullException(nameof(connectionString));
         }
+
 
         public async Task<GetNotCompletedOrdersResponse> Handle(GetNotCompletedOrdersQuery message, CancellationToken cancellationToken)
         {
-            //Выгружаем из репозитория все назначенные заказы
-            var allAssignedOrders = _orderRepository.GetAllInAssignedStatus();
-            if (allAssignedOrders == null || !allAssignedOrders.Any()) throw new ArgumentNullException(nameof(allAssignedOrders));
+            await using var connection = new NpgsqlConnection(_connectionString);
+            await connection.OpenAsync(cancellationToken);
 
-            //список всех назначенных заказов
-            List<OrderDTO> orders = new List<OrderDTO>();
+            var result = await connection.QueryAsync<dynamic>(
+                @"SELECT id, courier_id, location_x, location_y FROM public.orders where status!=@status;"
+                , new { status = OrderStatus.Completed.Name });
 
-            //Перебираем все назначенные заказы
-            foreach (var order in allAssignedOrders)
+            if (result.AsList().Count == 0)
+                return null;
+
+            var orders = new List<OrderDTO>();
+            foreach (var item in result)
             {
-                //определяем локацию заказа
-                var orderLocation = new LocationDTO() { X = order.Location.X, Y = order.Location.Y };
+                var location = new LocationDTO() { X = item.location_x, Y = item.location_y };
+                var order = new OrderDTO { Id = item.id, Location = location };
 
-                //добавляем заказ в список
-                orders.Add(new OrderDTO
-                {
-                    Id = order.Id,
-                    Location = orderLocation
-                });
+                orders.Add(order);
             }
 
             return new GetNotCompletedOrdersResponse(orders);
