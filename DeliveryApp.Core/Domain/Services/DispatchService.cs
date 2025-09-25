@@ -25,8 +25,11 @@ namespace DeliveryApp.Core.Domain.Services
             }
 
             //определяем индекс курьера в списке с наименьшим количеством шагов
+            if (courierStep.Count == 0) return GeneralErrors.ValueIsRequired(nameof(courierStep));
+
             double minStep = courierStep.Keys.Min();
             int courierStepIndex = courierStep[minStep];
+            
 
             // Если курьер найден - назначаем заказ на курьера
             var orderAssignToCourierResult = order.Assign(couriers[courierStepIndex]);

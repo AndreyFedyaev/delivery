@@ -2,6 +2,7 @@
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DeliveryApp.Core.Domain.Model.CourierAggregate
 {
@@ -18,6 +19,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <summary>
         ///     Ctr
         /// </summary>
+        [ExcludeFromCodeCoverage]
         private Courier()
         {
         }

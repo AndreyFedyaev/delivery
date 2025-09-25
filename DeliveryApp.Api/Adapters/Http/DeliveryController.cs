@@ -1,5 +1,6 @@
 ﻿using DeliveryApp.Core.Application.Commands.CreateOrder;
-using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
+using DeliveryApp.Core.Application.Queries.GetAllCouriers;
+using DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OpenApi.Controllers;

@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using MediatR;
 using Npgsql;
 

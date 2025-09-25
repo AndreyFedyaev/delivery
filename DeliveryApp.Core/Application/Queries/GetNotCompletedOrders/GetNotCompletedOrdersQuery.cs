@@ -1,6 +1,5 @@
-﻿using DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
-using MediatR;
+﻿using MediatR;
 
-namespace DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
+namespace DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
 
 public class GetNotCompletedOrdersQuery : IRequest<GetNotCompletedOrdersResponse>;

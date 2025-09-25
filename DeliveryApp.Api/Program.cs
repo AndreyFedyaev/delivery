@@ -6,9 +6,9 @@ using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCourier;
 using DeliveryApp.Core.Application.Queries.GetAllCouriers;
 using DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
-using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
+using DeliveryApp.Infrastructure.Adapters.gRPC.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
@@ -108,26 +108,29 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 // CRON Jobs
-//builder.Services.AddQuartz(configure =>
-//{
-//    var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
-//    var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
-//    configure
-//        .AddJob<AssignOrdersJob>(assignOrdersJobKey)
-//        .AddTrigger(
-//            trigger => trigger.ForJob(assignOrdersJobKey)
-//                .WithSimpleSchedule(
-//                    schedule => schedule.WithIntervalInSeconds(1)
-//                        .RepeatForever()))
-//        .AddJob<MoveCouriersJob>(moveCouriersJobKey)
-//        .AddTrigger(
-//            trigger => trigger.ForJob(moveCouriersJobKey)
-//                .WithSimpleSchedule(
-//                    schedule => schedule.WithIntervalInSeconds(2)
-//                        .RepeatForever()));
-//    configure.UseMicrosoftDependencyInjectionJobFactory();
-//});
-//builder.Services.AddQuartzHostedService();
+builder.Services.AddQuartz(configure =>
+{
+    var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
+    var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
+    configure
+        .AddJob<AssignOrdersJob>(assignOrdersJobKey)
+        .AddTrigger(
+            trigger => trigger.ForJob(assignOrdersJobKey)
+                .WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1)
+                        .RepeatForever()))
+        .AddJob<MoveCouriersJob>(moveCouriersJobKey)
+        .AddTrigger(
+            trigger => trigger.ForJob(moveCouriersJobKey)
+                .WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(2)
+                        .RepeatForever()));
+    configure.UseMicrosoftDependencyInjectionJobFactory();
+});
+builder.Services.AddQuartzHostedService();
+
+// gRPC
+builder.Services.AddScoped<IGeoServiceClient, GeoServiceClient>();
 
 var app = builder.Build();
 
