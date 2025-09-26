@@ -1,6 +1,5 @@
-﻿using DeliveryApp.Core.Application.Queries.GetAllCouriers;
-using MediatR;
+﻿using MediatR;
 
-namespace DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
+namespace DeliveryApp.Core.Application.Queries.GetAllCouriers;
 
 public class GetAllCouriersQuery : IRequest<GetAllCouriersQueryResponse>;

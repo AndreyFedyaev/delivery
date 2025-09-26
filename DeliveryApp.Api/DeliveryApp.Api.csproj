@@ -13,7 +13,7 @@
     <ItemGroup>
         <PackageReference Include="Confluent.Kafka" Version="2.11.0" />
         <PackageReference Include="Dapper" Version="2.1.66" />
-        <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+        <PackageReference Include="Google.Protobuf" Version="3.32.1" />
         <PackageReference Include="Grpc.Tools" Version="2.72.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

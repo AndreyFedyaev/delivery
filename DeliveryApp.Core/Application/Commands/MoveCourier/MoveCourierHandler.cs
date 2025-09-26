@@ -24,14 +24,17 @@ namespace DeliveryApp.Core.Application.Commands.MoveCourier
         public async Task<UnitResult<Error>> Handle(MoveCourierCommand message, CancellationToken cancellationToken)
         {
             //Выгружаем из репозитория все назначенные заказы
-            var allAssignedOrders = _orderRepository.GetAllInAssignedStatus();
+            var allAssignedOrders = _orderRepository.GetAllInAssignedStatus().ToList();
             if (allAssignedOrders == null || !allAssignedOrders.Any()) return GeneralErrors.ValueIsRequired(nameof(allAssignedOrders));
 
             //Перебираем все назначенные заказы
             foreach (var order in allAssignedOrders)
             {
+                if (order.CourierId == null)
+                    return GeneralErrors.ValueIsInvalid(nameof(order.CourierId));
+
                 //Определяем назначенного курьера
-                var courier = await _courierRepository.GetAsync(order.CourierId.Value);
+                var courier = await _courierRepository.GetAsync((Guid)order.CourierId.Value);
                 if (courier.HasNoValue) return GeneralErrors.ValueIsRequired(nameof(courier));
 
                 //проверяем на совпадение координат курьера и заказа
