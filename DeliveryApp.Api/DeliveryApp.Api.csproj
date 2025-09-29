@@ -11,7 +11,10 @@
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Confluent.Kafka" Version="2.11.0" />
+      <None Remove="Adapters\Kafka\BasketConfirmed\Contract.proto" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Confluent.Kafka" Version="2.11.1" />
         <PackageReference Include="Dapper" Version="2.1.66" />
         <PackageReference Include="Google.Protobuf" Version="3.32.1" />
         <PackageReference Include="Grpc.Tools" Version="2.72.0">
@@ -47,6 +50,8 @@
         <ProjectReference Include="..\DeliveryApp.Infrastructure\DeliveryApp.Infrastructure.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Adapters\Kafka\" />
+      <Protobuf Include="Adapters\Kafka\BasketConfirmed\Contract.proto">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Protobuf>
     </ItemGroup>
 </Project>
