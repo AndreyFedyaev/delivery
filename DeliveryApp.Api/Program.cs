@@ -5,11 +5,14 @@ using DeliveryApp.Api.Adapters.Kafka.Basket;
 using DeliveryApp.Core.Application.Commands.AssignToCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCourier;
+using DeliveryApp.Core.Application.DomainEventHandlers;
 using DeliveryApp.Core.Application.Queries.GetAllCouriers;
 using DeliveryApp.Core.Application.Queries.GetNotCompletedOrders;
+using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.gRPC.GeoService;
+using DeliveryApp.Infrastructure.Adapters.Kafka.OrderStatus;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
@@ -140,6 +143,12 @@ builder.Services.Configure<HostOptions>(options =>
     options.ShutdownTimeout = TimeSpan.FromSeconds(30);
 });
 builder.Services.AddHostedService<ConsumerService>();
+
+// Domain Event Handlers
+builder.Services.AddScoped<INotificationHandler<OrderCreatedDomainEvent>, OrderCreatedDomainEventHandler>();
+
+// Message Broker Producer
+builder.Services.AddScoped<IMessageBusProducer, Producer>();
 
 var app = builder.Build();
 

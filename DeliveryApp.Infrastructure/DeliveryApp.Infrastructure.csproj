@@ -8,7 +8,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Confluent.Kafka" Version="2.10.1" />
+	  <None Remove="Adapters\Kafka\OrderStatusChanged\Contract.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Confluent.Kafka" Version="2.11.1" />
 		<PackageReference Include="Google.Protobuf" Version="3.32.1" />
 		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
 		<PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
@@ -36,6 +40,9 @@
 	<ItemGroup>
 		<Protobuf Include="Adapters\Grpc\GeoService\grpc.proto">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Protobuf>
+		<Protobuf Include="Adapters\Kafka\OrderStatusChanged\Contract.proto">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Protobuf>
 	</ItemGroup>
 
