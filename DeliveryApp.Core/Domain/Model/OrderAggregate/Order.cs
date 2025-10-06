@@ -96,6 +96,9 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
             if (CourierId == null) return new Error($"{nameof(Order).ToLowerInvariant()}", "Нельзя заавершить заказ, который небыл назначен на курьера!");
 
             Status = OrderStatus.Completed;
+
+            RaiseDomainEvent(new OrderCompletedDomainEvent(Id, (Guid)CourierId));
+
             CourierId = null;
 
             return UnitResult.Success<Error>();

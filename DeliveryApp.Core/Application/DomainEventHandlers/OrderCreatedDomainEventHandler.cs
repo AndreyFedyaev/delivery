@@ -16,6 +16,6 @@ public sealed class OrderCreatedDomainEventHandler : INotificationHandler<OrderC
 
     public async Task Handle(OrderCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        await _messageBusProducer.Publish(notification, cancellationToken);
+        await _messageBusProducer.PublishOrderCreated(notification, cancellationToken);
     }
 }

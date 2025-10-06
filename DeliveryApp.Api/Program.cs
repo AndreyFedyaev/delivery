@@ -146,6 +146,7 @@ builder.Services.AddHostedService<ConsumerService>();
 
 // Domain Event Handlers
 builder.Services.AddScoped<INotificationHandler<OrderCreatedDomainEvent>, OrderCreatedDomainEventHandler>();
+builder.Services.AddScoped<INotificationHandler<OrderCompletedDomainEvent>, OrderCompletedDomainEventHandler>();
 
 // Message Broker Producer
 builder.Services.AddScoped<IMessageBusProducer, Producer>();

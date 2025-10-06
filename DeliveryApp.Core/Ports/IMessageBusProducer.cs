@@ -3,5 +3,6 @@
 namespace DeliveryApp.Core.Ports;
 public interface IMessageBusProducer
 {
-    Task Publish(OrderCreatedDomainEvent notification, CancellationToken cancellationToken);
+    Task PublishOrderCreated(OrderCreatedDomainEvent notification, CancellationToken cancellationToken);
+    Task PublishOrderCompleted(OrderCompletedDomainEvent notification, CancellationToken cancellationToken);
 }

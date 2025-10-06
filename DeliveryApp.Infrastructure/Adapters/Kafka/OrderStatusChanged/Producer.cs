@@ -29,7 +29,7 @@ public sealed class Producer : IMessageBusProducer
         _topicName = options.Value.OrderStatusChangedTopic;
     }
 
-    public async Task Publish(OrderCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task PublishOrderCreated(OrderCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         // Перекладываем данные из Domain Event в Integration Event
         var orderCreatedIntegrationEvent = new OrderCreatedIntegrationEvent
@@ -44,6 +44,36 @@ public sealed class Producer : IMessageBusProducer
         {
             Key = notification.EventId.ToString(),
             Value = JsonConvert.SerializeObject(orderCreatedIntegrationEvent)
+        };
+
+        try
+        {
+            // Отправляем сообщение в Kafka
+            using var producer = new ProducerBuilder<string, string>(_config).Build();
+            var dr = await producer.ProduceAsync(_topicName, message, cancellationToken);
+            Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
+        }
+        catch (ProduceException<Null, string> e)
+        {
+            Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+        }
+    }
+    public async Task PublishOrderCompleted(OrderCompletedDomainEvent notification, CancellationToken cancellationToken)
+    {
+        // Перекладываем данные из Domain Event в Integration Event
+        var orderCompletedIntegrationEvent = new OrderCompletedIntegrationEvent
+        {
+            EventId = notification.EventId.ToString(),
+            OccurredAt = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(notification.OccurredAt),
+            OrderId = notification.OrderId.ToString(),
+            CourierId = notification.CourierId.ToString()
+        };
+
+        // Создаем сообщение для Kafka
+        var message = new Message<string, string>
+        {
+            Key = notification.EventId.ToString(),
+            Value = JsonConvert.SerializeObject(orderCompletedIntegrationEvent)
         };
 
         try
