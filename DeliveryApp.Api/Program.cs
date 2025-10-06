@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
+using DeliveryApp.Api.Adapters.Kafka.Basket;
 using DeliveryApp.Core.Application.Commands.AssignToCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCourier;
@@ -131,6 +132,14 @@ builder.Services.AddQuartzHostedService();
 
 // gRPC
 builder.Services.AddScoped<IGeoServiceClient, GeoServiceClient>();
+
+// Message Broker Consumer
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+    options.ShutdownTimeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddHostedService<ConsumerService>();
 
 var app = builder.Build();
 
