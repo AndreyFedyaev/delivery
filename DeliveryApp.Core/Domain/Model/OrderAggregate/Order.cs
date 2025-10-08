@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using DeliveryApp.Core.Domain.Model.CourierAggregate;
+using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Primitives;
 
@@ -30,6 +31,8 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
             Volume = volume;
 
             Status = OrderStatus.Created;
+
+            RaiseDomainEvent(new OrderCreatedDomainEvent(Id));
         }
         /// <summary>
         ///     Местоположение куда нужно доставить заказ
@@ -93,6 +96,9 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
             if (CourierId == null) return new Error($"{nameof(Order).ToLowerInvariant()}", "Нельзя заавершить заказ, который небыл назначен на курьера!");
 
             Status = OrderStatus.Completed;
+
+            RaiseDomainEvent(new OrderCompletedDomainEvent(Id, (Guid)CourierId));
+
             CourierId = null;
 
             return UnitResult.Success<Error>();
