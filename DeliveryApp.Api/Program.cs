@@ -14,6 +14,7 @@ using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.gRPC.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Kafka.OrderStatus;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.BackgroundJobs;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -131,7 +132,7 @@ builder.Services.AddQuartz(configure =>
                         .RepeatForever()));
     configure.UseMicrosoftDependencyInjectionJobFactory();
 });
-builder.Services.AddQuartzHostedService();
+//builder.Services.AddQuartzHostedService();
 
 // gRPC
 builder.Services.AddScoped<IGeoServiceClient, GeoServiceClient>();
@@ -150,6 +151,21 @@ builder.Services.AddScoped<INotificationHandler<OrderCompletedDomainEvent>, Orde
 
 // Message Broker Producer
 builder.Services.AddScoped<IMessageBusProducer, Producer>();
+
+// CRON Jobs
+builder.Services.AddQuartz(configure =>
+{
+    var processOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+    configure
+        .AddJob<ProcessOutboxMessagesJob>(processOutboxMessagesJobKey)
+        .AddTrigger(
+            trigger => trigger.ForJob(processOutboxMessagesJobKey)
+                .WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(3)
+                        .RepeatForever()));
+    configure.UseMicrosoftDependencyInjectionJobFactory();
+});
+builder.Services.AddQuartzHostedService();
 
 var app = builder.Build();
 
