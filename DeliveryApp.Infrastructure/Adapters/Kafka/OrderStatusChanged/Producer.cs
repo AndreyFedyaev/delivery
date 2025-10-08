@@ -76,16 +76,9 @@ public sealed class Producer : IMessageBusProducer
             Value = JsonConvert.SerializeObject(orderCompletedIntegrationEvent)
         };
 
-        try
-        {
-            // Отправляем сообщение в Kafka
-            using var producer = new ProducerBuilder<string, string>(_config).Build();
-            var dr = await producer.ProduceAsync(_topicName, message, cancellationToken);
-            Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
-        }
-        catch (ProduceException<Null, string> e)
-        {
-            Console.WriteLine($"Delivery failed: {e.Error.Reason}");
-        }
+
+        // Отправляем сообщение в Kafka
+        using var producer = new ProducerBuilder<string, string>(_config).Build();
+        var dr = await producer.ProduceAsync(_topicName, message, cancellationToken);
     }
 }
